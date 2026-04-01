@@ -1,22 +1,20 @@
-/* Smooth fade for Zen Mode */
-.zen-overlay {
-  animation: fadeIn 1.5s ease-in-out;
+/* Custom Scrollbar for History */
+.history-container::-webkit-scrollbar {
+  width: 4px;
 }
 
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+.history-container::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
 }
 
-/* Glassmorphism for the Sound Mixer */
-.backdrop-blur {
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+.history-container::-webkit-scrollbar-thumb {
+  background: #0ea5e9;
+  border-radius: 10px;
 }
 
-/* Custom font for the Timer */
-.font-monospace {
-  font-family: 'Courier New', Courier, monospace;
-  letter-spacing: -2px;
+.text-truncate {
+  max-width: 250px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
