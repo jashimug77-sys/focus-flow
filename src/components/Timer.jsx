@@ -1,19 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import ProgressRing from './ProgressRing';
 
-export default function Timer({ mode, onModeChange, onTick }) {
-  const totalSeconds = mode === 'work' ? 25 * 60 : 5 * 60;
+export default function Timer({ mode, onModeChange, onTick, workDuration, breakDuration }) {
+  // Use custom durations passed as props
+  const totalSeconds = (mode === 'work' ? workDuration : breakDuration) * 60;
+  
   const [secondsLeft, setSecondsLeft] = useState(totalSeconds);
   const [isActive, setIsActive] = useState(false);
-
   const ringColor = mode === 'work' ? '#3b82f6' : '#22c55e';
 
+  // Reset timer whenever mode OR durations change
   useEffect(() => {
     setSecondsLeft(totalSeconds);
     setIsActive(false);
   }, [mode, totalSeconds]);
 
-  // Helper to format time
   const formatTime = (total) => {
     const mins = Math.floor(total / 60);
     const secs = total % 60;
@@ -26,7 +27,7 @@ export default function Timer({ mode, onModeChange, onTick }) {
       interval = setInterval(() => {
         setSecondsLeft((prev) => {
           const next = prev - 1;
-          onTick(formatTime(next)); // Update the Tab Title via App.jsx
+          onTick(formatTime(next));
           return next;
         });
       }, 1000);

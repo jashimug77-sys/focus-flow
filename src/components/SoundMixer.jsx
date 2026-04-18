@@ -1,51 +1,47 @@
-import React, { useState, useEffect } from 'react';
-
-const soundsData = [
-  { id: 'rain', label: '🌧️ Rain', file: '/sounds/rain.mp3' },
-  { id: 'cafe', label: '☕ Cafe', file: '/sounds/cafe.mp3' }
-];
+import React, { useState, useRef, useEffect } from 'react';
 
 export default function SoundMixer() {
-  const [playing, setPlaying] = useState({});
-  const [audios] = useState({});
+  const [isPlaying, setIsPlaying] = useState({ nature: false, cafe: false });
+  const natureRef = useRef(new Audio('/sounds/nature.mp3')); // Ensure this file exists!
+  const cafeRef = useRef(new Audio('/sounds/cafe.mp3'));
 
+  // Cleanup on unmount
   useEffect(() => {
-    // Pre-load audio objects
-    soundsData.forEach(sound => {
-      const audio = new Audio(sound.file);
-      audio.loop = true;
-      audios[sound.id] = audio;
-    });
     return () => {
-      // Clean up on unmount
-      Object.values(audios).forEach(a => a.pause());
+      natureRef.current.pause();
+      cafeRef.current.pause();
     };
-  }, [audios]);
+  }, []);
 
-  const toggleSound = (id) => {
-    if (playing[id]) {
-      audios[id].pause();
+  const toggleSound = (sound) => {
+    if (sound === 'nature') {
+      if (isPlaying.nature) natureRef.current.pause();
+      else natureRef.current.play();
+      setIsPlaying(prev => ({ ...prev, nature: !prev.nature }));
     } else {
-      audios[id].play();
+      if (isPlaying.cafe) cafeRef.current.pause();
+      else cafeRef.current.play();
+      setIsPlaying(prev => ({ ...prev, cafe: !prev.cafe }));
     }
-    setPlaying(prev => ({ ...prev, [id]: !prev[id] }));
   };
 
   return (
-    <div className="mt-5 p-4 rounded-4 bg-white bg-opacity-10 backdrop-blur" style={{ maxWidth: '400px' }}>
-      <h6 className="text-uppercase small mb-3 opacity-75">Ambient Mixer</h6>
-      <div className="row g-3">
-        {soundsData.map(sound => (
-          <div key={sound.id} className="col-6 text-center">
-            <button 
-              className={`btn w-100 rounded-3 ${playing[sound.id] ? 'btn-info' : 'btn-outline-light opacity-50'}`}
-              onClick={() => toggleSound(sound.id)}
-            >
-              {sound.label}
-            </button>
-          </div>
-        ))}
-      </div>
+    <div className="d-flex justify-content-center gap-3 my-4">
+      {/* Nature Sound Button */}
+      <button 
+        className={`btn btn-sm rounded-pill px-4 ${isPlaying.nature ? 'btn-info text-white' : 'btn-outline-info'}`}
+        onClick={() => toggleSound('nature')}
+      >
+        {isPlaying.nature ? '🔊 Nature' : '🔇 Nature'}
+      </button>
+
+      {/* Cafe Sound Button */}
+      <button 
+        className={`btn btn-sm rounded-pill px-4 ${isPlaying.cafe ? 'btn-info text-white' : 'btn-outline-info'}`}
+        onClick={() => toggleSound('cafe')}
+      >
+        {isPlaying.cafe ? '🔊 Cafe' : '🔇 Cafe'}
+      </button>
     </div>
   );
 }
